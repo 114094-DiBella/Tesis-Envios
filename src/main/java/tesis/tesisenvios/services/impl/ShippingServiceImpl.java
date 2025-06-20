@@ -129,6 +129,19 @@ public class ShippingServiceImpl implements ShippingService {
         if (shipment.isPresent()) {
             ShipmentResponse response = modelMapper.map(shipment.get(), ShipmentResponse.class);
 
+            // FIX: Mapear manualmente la dirección desde JSON
+            try {
+                if (shipment.get().getShippingAddress() != null) {
+                    ShippingAddressResponse address = objectMapper.readValue(
+                            shipment.get().getShippingAddress(),
+                            ShippingAddressResponse.class
+                    );
+                    response.setShippingAddress(address);
+                }
+            } catch (Exception e) {
+                log.warn("Error parseando dirección de envío: {}", e.getMessage());
+            }
+
             // Agregar eventos de tracking
             List<TrackingEventEntity> events = trackingEventRepository
                     .findByShipmentIdOrderByEventDateDesc(shipment.get().getId());
