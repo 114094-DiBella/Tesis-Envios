@@ -86,7 +86,7 @@ public class ShippingController {
     /**
      * Cancelar un envío
      */
-    @DELETE("/order/{orderCode}")
+    @DeleteMapping("/order/{orderCode}")
     public ResponseEntity<Map<String, Object>> cancelShipment(@PathVariable String orderCode) {
         try {
             boolean cancelled = shippingService.cancelShipment(orderCode);
